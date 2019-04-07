@@ -5,13 +5,14 @@ const moment = require('moment');
 const common = require('../lib/common');
 // 每天0点执行
 const j = schedule.scheduleJob('1 0 0 * * *', async function() {
+  console.log('schedule start')
   const yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
   // 渠道活跃用户数统计
   const channelArray = await db.collection('channel').find().toArray();
   for (const channel of channelArray) {
     const totalActive = parseInt(await redis.scard(`channelActiveDeviceIdSet#${channel.channelName}#${yesterday}`));
     if (totalActive > 0) {
-      await db.collection('channelStat').insert({ 
+      await db.collection('channelStat').insertOne({ 
         channelName: channel.channelName,
         totalActive, 
         statDate: yesterday,
@@ -30,7 +31,7 @@ const j = schedule.scheduleJob('1 0 0 * * *', async function() {
     const close = parseInt((await redis.get(`closeTimes#${order.orderId}#${yesterday}`)) || 0);
     const click = parseInt((await redis.get(`clickTimes#${order.orderId}#${yesterday}`)) || 0);
 
-    await db.collection('orderStat').insert({ 
+    await db.collection('orderStat').insertOne({ 
       orderId: order.orderId,
       appName: order.appName,
       appType: order.appType,
