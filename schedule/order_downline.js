@@ -2,7 +2,7 @@ const schedule = require('node-schedule');
 const db = require('../lib/mongodb');
 const redis = require('../lib/redis');
 const moment = require('moment');
-const common = require('../lib/common');
+
 // 每天0点执行
 const j = schedule.scheduleJob('1 0 0 * * *', async function() {
   console.log('schedule start')
@@ -18,7 +18,8 @@ const j = schedule.scheduleJob('1 0 0 * * *', async function() {
         statDate: yesterday,
         createAt: new Date(), 
         updateAt: new Date()
-      })
+      });
+      console.log('insert channelStat one')
     }
   }
 
@@ -45,9 +46,11 @@ const j = schedule.scheduleJob('1 0 0 * * *', async function() {
       statDate: yesterday,
       createAt: new Date(), 
       updateAt: new Date()
-    })
+    });
+    console.log('insert orderStat one')
+
   }
   // 自动下线
-  await db.collection('order').update({ endDate: { $lte: new Date()}}, { $set: { online: 0 } });
+  await db.collection('order').updateOne({ endDate: { $lte: new Date()}}, { $set: { online: 0 } });
 
 });
