@@ -23,7 +23,7 @@ schedule.scheduleJob('1 0 0 * * *', async function() {
   }
 
   // 订单统计
-  const orderArray = await db.collection('order').find({ online: 1 }).toArray();
+  const orderArray = await db.collection('order').find().toArray();
   for (const order of orderArray) {
     const hasData = parseInt((await redis.get(`hasDataTimes#${order.orderId}#${yesterday}`)) || 0);
     const show = parseInt((await redis.get(`showTimes#${order.orderId}#${yesterday}`)) || 0);
