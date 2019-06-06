@@ -49,5 +49,5 @@ schedule.scheduleJob('1 0 0 * * *', async function() {
   }
   // 自动下线
   await db.collection('order').updateOne({ endDate: { $lte: new Date()}}, { $set: { online: 0 } });
-
+//dev2
 });
